@@ -1460,7 +1460,7 @@ HTML_TEMPLATE = """
                             </div>
                         </div>
                         ${contact.needs_response ? `<button class="btn btn-responded" onclick="markResponded(${contact.id})">Responded</button>` : ''}
-                        <button class="btn settings-btn" onclick="openSettingsModal(${contact.id})">Settings</button>
+                        <button class="btn settings-btn" onclick="openSettingsModal(${contact.id})">⚙️</button>
                     </div>
                 </div>
             `;
