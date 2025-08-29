@@ -404,7 +404,7 @@ def get_contacts():
             last_was_received = True
         
         contact_dict['overdue'] = False
-        contact_dict['needs_communication'] = False  # New field for max days check
+        contact_dict['needs_communication'] = False
         contact_dict['snoozed'] = False
         
         # Handle missing columns gracefully for existing contacts
@@ -763,4 +763,601 @@ HTML_TEMPLATE = '''
         .btn {
             padding: 5px 10px;
             border: none;
-            border-radius:
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .btn-sent {
+            background: #28a745;
+            color: white;
+        }
+        .btn-received {
+            background: #ffc107;
+            color: black;
+        }
+        .btn-responded {
+            background: #17a2b8;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .needs-response-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+        .overdue-badge {
+            background: #dc3545;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+        .communication-needed-badge {
+            background: #fd7e14;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+        .snoozed-badge {
+            background: #6f42c1;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+        .contact.snoozed {
+            opacity: 0.7;
+        }
+        .muted-badge {
+            background: #6c757d;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+        .contact.muted {
+            opacity: 0.6;
+            filter: grayscale(30%);
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .settings-btn {
+            background: #6c757d;
+            color: white;
+            font-size: 10px;
+            padding: 3px 6px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .setting-group {
+            margin-bottom: 15px;
+        }
+        .setting-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .setting-input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .modal-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal-btn-save {
+            background: #28a745;
+            color: white;
+        }
+        .modal-btn-cancel {
+            background: #6c757d;
+            color: white;
+        }
+        .snooze-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+        .snooze-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .snooze-btn {
+            padding: 5px 10px;
+            border: 1px solid #6f42c1;
+            background: white;
+            color: #6f42c1;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .snooze-btn:hover {
+            background: #6f42c1;
+            color: white;
+        }
+        .unsnooze-btn {
+            background: #6f42c1;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .unsnooze-btn:hover {
+            background: #5a2d91;
+        }
+        .mute-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+        .mute-btn {
+            padding: 8px 16px;
+            border: 1px solid #6c757d;
+            background: white;
+            color: #6c757d;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            width: 100%;
+        }
+        .mute-btn:hover {
+            background: #6c757d;
+            color: white;
+        }
+        .unmute-btn {
+            background: #6c757d;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            width: 100%;
+        }
+        .unmute-btn:hover {
+            background: #5a6268;
+        }
+        .warning-text {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        .empty-section {
+            padding: 40px 20px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+        @media (max-width: 768px) {
+            .contacts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="contacts-grid">
+        <div class="contacts-section">
+            <div class="section-header communication-needed-header">
+                🚨 Communication Needed (<span id="communicationNeededCount">0</span>)
+            </div>
+            <div class="section-content" id="communicationNeededList">
+                <div class="empty-section">No communication needed</div>
+            </div>
+        </div>
+        
+        <div class="contacts-section">
+            <div class="section-header">
+                📋 All Contacts (<span id="allCount">0</span>)
+            </div>
+            <div class="section-content" id="allContactsList">
+                <div class="empty-section">No contacts yet. Add someone to start tracking!</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Response Time Settings</div>
+            <div class="setting-group">
+                <label class="setting-label" for="textHours">Text Response Time (hours):</label>
+                <input type="number" id="textHours" class="setting-input" min="1" max="168">
+            </div>
+            <div class="setting-group">
+                <label class="setting-label" for="emailHours">Email Response Time (hours):</label>
+                <input type="number" id="emailHours" class="setting-input" min="1" max="720">
+            </div>
+            <div class="setting-group">
+                <label class="setting-label" for="maxDays">Max days since contact:</label>
+                <input type="number" id="maxDays" class="setting-input" min="1" max="365">
+                <div class="warning-text">Contact will appear in "Communication Needed" if no contact for this many days</div>
+            </div>
+            <div class="snooze-section" id="snoozeSection">
+                <div class="setting-label">Snooze Options:</div>
+                <div id="currentSnoozeStatus"></div>
+                <div class="snooze-buttons" id="snoozeButtons">
+                    <button class="snooze-btn" onclick="snoozeContact(1)">1 hour</button>
+                    <button class="snooze-btn" onclick="snoozeContact(4)">4 hours</button>
+                    <button class="snooze-btn" onclick="snoozeContact(24)">1 day</button>
+                    <button class="snooze-btn" onclick="snoozeContact(72)">3 days</button>
+                    <button class="snooze-btn" onclick="snoozeContact(168)">1 week</button>
+                </div>
+            </div>
+            <div class="mute-section">
+                <div class="setting-label">Mute Contact:</div>
+                <div id="currentMuteStatus"></div>
+                <div id="muteButton"></div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="closeSettingsModal()">Cancel</button>
+                <button class="modal-btn modal-btn-save" onclick="saveSettings()">Save</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="add-contact">
+        <input type="text" id="nameInput" placeholder="Enter person's name" onkeypress="handleKeyPress(event)">
+        <button onclick="addContact()">Add Contact</button>
+    </div>
+
+    <script>
+        let contacts = [];
+        let currentContactId = null;
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                addContact();
+            }
+        }
+        
+        async function addContact() {
+            const nameInput = document.getElementById('nameInput');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                alert('Please enter a name');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/contacts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name: name })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    nameInput.value = '';
+                    loadContacts();
+                } else {
+                    alert(result.error || 'Error adding contact');
+                }
+            } catch (error) {
+                alert('Error adding contact');
+            }
+        }
+        
+        async function markSent(contactId, method) {
+            await fetch(`/api/contacts/${contactId}/sent`, { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ method: method })
+            });
+            loadContacts();
+        }
+        
+        async function markReceived(contactId, method) {
+            await fetch(`/api/contacts/${contactId}/received`, { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ method: method })
+            });
+            loadContacts();
+        }
+        
+        async function markResponded(contactId) {
+            await fetch(`/api/contacts/${contactId}/responded`, { method: 'POST' });
+            loadContacts();
+        }
+        
+        function openSettingsModal(contactId) {
+            const contact = contacts.find(c => c.id === contactId);
+            if (contact) {
+                currentContactId = contactId;
+                document.getElementById('textHours').value = contact.text_response_hours || 12;
+                document.getElementById('emailHours').value = contact.email_response_hours || 48;
+                document.getElementById('maxDays').value = contact.max_days_since_contact || 30;
+                
+                // Update snooze status
+                const snoozeStatus = document.getElementById('currentSnoozeStatus');
+                const snoozeButtons = document.getElementById('snoozeButtons');
+                
+                if (contact.snoozed) {
+                    snoozeStatus.innerHTML = `<div style="color: #6f42c1; margin-bottom: 10px;">Currently snoozed for ${contact.snooze_time_left}</div>`;
+                    snoozeButtons.innerHTML = '<button class="unsnooze-btn" onclick="unsnoozeContact()">Remove Snooze</button>';
+                } else {
+                    snoozeStatus.innerHTML = '<div style="color: #666; margin-bottom: 10px;">Not snoozed</div>';
+                    snoozeButtons.innerHTML = `
+                        <button class="snooze-btn" onclick="snoozeContact(1)">1 hour</button>
+                        <button class="snooze-btn" onclick="snoozeContact(4)">4 hours</button>
+                        <button class="snooze-btn" onclick="snoozeContact(24)">1 day</button>
+                        <button class="snooze-btn" onclick="snoozeContact(72)">3 days</button>
+                        <button class="snooze-btn" onclick="snoozeContact(168)">1 week</button>
+                    `;
+                }
+                
+                // Update mute status
+                const muteStatus = document.getElementById('currentMuteStatus');
+                const muteButton = document.getElementById('muteButton');
+                
+                if (contact.muted) {
+                    muteStatus.innerHTML = '<div style="color: #6c757d; margin-bottom: 10px;">This contact is muted and will never appear in communication needed section</div>';
+                    muteButton.innerHTML = '<button class="unmute-btn" onclick="unmuteContact()">Unmute Contact</button>';
+                } else {
+                    muteStatus.innerHTML = '<div style="color: #666; margin-bottom: 10px;">Contact will appear in communication needed section when thresholds are exceeded</div>';
+                    muteButton.innerHTML = `
+                        <button class="mute-btn" onclick="muteContact()">Mute Contact</button>
+                        <div class="warning-text">Muted contacts never appear in communication needed</div>
+                    `;
+                }
+                
+                document.getElementById('settingsModal').style.display = 'block';
+            }
+        }
+        
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').style.display = 'none';
+            currentContactId = null;
+        }
+        
+        async function saveSettings() {
+            if (!currentContactId) return;
+            
+            const textHours = parseInt(document.getElementById('textHours').value);
+            const emailHours = parseInt(document.getElementById('emailHours').value);
+            const maxDays = parseInt(document.getElementById('maxDays').value);
+            
+            try {
+                await fetch(`/api/contacts/${currentContactId}/settings`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        text_response_hours: textHours,
+                        email_response_hours: emailHours,
+                        max_days_since_contact: maxDays
+                    })
+                });
+                closeSettingsModal();
+                loadContacts();
+            } catch (error) {
+                alert('Error saving settings');
+            }
+        }
+        
+        async function snoozeContact(hours) {
+            if (!currentContactId) return;
+            
+            try {
+                await fetch(`/api/contacts/${currentContactId}/snooze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ hours: hours })
+                });
+                closeSettingsModal();
+                loadContacts();
+            } catch (error) {
+                alert('Error snoozing contact');
+            }
+        }
+        
+        async function unsnoozeContact() {
+            if (!currentContactId) return;
+            
+            try {
+                await fetch(`/api/contacts/${currentContactId}/unsnooze`, {
+                    method: 'POST'
+                });
+                closeSettingsModal();
+                loadContacts();
+            } catch (error) {
+                alert('Error removing snooze');
+            }
+        }
+        
+        async function muteContact() {
+            if (!currentContactId) return;
+            
+            if (confirm('Are you sure you want to mute this contact? They will never appear in the communication needed section.')) {
+                try {
+                    await fetch(`/api/contacts/${currentContactId}/mute`, {
+                        method: 'POST'
+                    });
+                    closeSettingsModal();
+                    loadContacts();
+                } catch (error) {
+                    alert('Error muting contact');
+                }
+            }
+        }
+        
+        async function unmuteContact() {
+            if (!currentContactId) return;
+            
+            try {
+                await fetch(`/api/contacts/${currentContactId}/unmute`, {
+                    method: 'POST'
+                });
+                closeSettingsModal();
+                loadContacts();
+            } catch (error) {
+                alert('Error unmuting contact');
+            }
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('settingsModal');
+            if (event.target === modal) {
+                closeSettingsModal();
+            }
+        }
+        
+        async function loadContacts() {
+            try {
+                const response = await fetch('/api/contacts');
+                contacts = await response.json();
+                
+                // Sort contacts by name
+                contacts.sort((a, b) => a.name.localeCompare(b.name));
+                
+                renderContacts();
+            } catch (error) {
+                console.error('Error loading contacts:', error);
+            }
+        }
+        
+        function renderContactCard(contact) {
+            return `
+                <div class="contact ${contact.needs_communication ? 'needs-communication' : ''} ${contact.snoozed ? 'snoozed' : ''} ${contact.muted ? 'muted' : ''}">
+                    <div class="contact-info">
+                        <div class="contact-name">
+                            ${contact.name}
+                            ${contact.needs_response ? '<span class="needs-response-badge">Needs Response</span>' : ''}
+                            ${contact.overdue ? '<span class="overdue-badge">OVERDUE</span>' : ''}
+                            ${contact.needs_communication ? '<span class="communication-needed-badge">Contact Needed</span>' : ''}
+                            ${contact.snoozed ? `<span class="snoozed-badge">Snoozed ${contact.snooze_time_left}</span>` : ''}
+                            ${contact.muted ? '<span class="muted-badge">MUTED</span>' : ''}
+                        </div>
+                        <div class="contact-time">Last contact: ${contact.time_since}</div>
+                    </div>
+                    <div class="contact-actions">
+                        <div class="btn-group">
+                            <div class="btn-group-label">Sent</div>
+                            <div>
+                                <button class="btn btn-sent" onclick="markSent(${contact.id}, 'text')">Text</button>
+                                <button class="btn btn-sent" onclick="markSent(${contact.id}, 'email')">Email</button>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <div class="btn-group-label">Received</div>
+                            <div>
+                                <button class="btn btn-received" onclick="markReceived(${contact.id}, 'text')">Text</button>
+                                <button class="btn btn-received" onclick="markReceived(${contact.id}, 'email')">Email</button>
+                            </div>
+                        </div>
+                        ${contact.needs_response ? `<button class="btn btn-responded" onclick="markResponded(${contact.id})">Responded</button>` : ''}
+                        <button class="btn settings-btn" onclick="openSettingsModal(${contact.id})">⚙️</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderContacts() {
+            const communicationNeededContainer = document.getElementById('communicationNeededList');
+            const allContainer = document.getElementById('allContactsList');
+            const communicationNeededCountEl = document.getElementById('communicationNeededCount');
+            const allCountEl = document.getElementById('allCount');
+            
+            // Separate contacts that need communication from all contacts
+            const communicationNeededContacts = contacts.filter(contact => 
+                (contact.overdue && contact.needs_response) || contact.needs_communication
+            );
+            const allContacts = contacts;
+            
+            // Update counts
+            communicationNeededCountEl.textContent = communicationNeededContacts.length;
+            allCountEl.textContent = allContacts.length;
+            
+            // Render communication needed contacts
+            if (communicationNeededContacts.length === 0) {
+                communicationNeededContainer.innerHTML = '<div class="empty-section">No communication needed</div>';
+            } else {
+                communicationNeededContainer.innerHTML = communicationNeededContacts.map(renderContactCard).join('');
+            }
+            
+            // Render all contacts
+            if (allContacts.length === 0) {
+                allContainer.innerHTML = '<div class="empty-section">No contacts yet. Add someone to start tracking!</div>';
+            } else {
+                allContainer.innerHTML = allContacts.map(renderContactCard).join('');
+            }
+        }
+        
+        // Load contacts when page loads
+        loadContacts();
+        
+        // Auto-refresh every minute to update timers
+        setInterval(loadContacts, 60000);
+    </script>
+</body>
+</html>
+'''
+
+if __name__ == '__main__':
+    init_db()
+    app.run(debug=True, port=5000)
