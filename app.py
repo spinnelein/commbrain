@@ -539,6 +539,32 @@ def mark_received(contact_id):
     db.commit()
     return jsonify({'success': True})
 
+@app.route('/api/contacts/<int:contact_id>/phone', methods=['POST'])
+@login_required
+def mark_phone_call(contact_id):
+    user_id = session['user']['id']
+    
+    db = get_db()
+    
+    # Verify contact belongs to user
+    contact = db.execute('SELECT * FROM contacts WHERE id = ? AND user_id = ?', (contact_id, user_id)).fetchone()
+    if not contact:
+        return jsonify({'error': 'Contact not found'}), 404
+    
+    now = datetime.datetime.now().isoformat()
+    
+    # Update both last_sent and last_received since phone calls are bidirectional
+    # Don't set needs_response since phone calls are immediate two-way communication
+    db.execute('UPDATE contacts SET last_sent = ?, last_received = ?, last_sent_method = ?, last_received_method = ?, needs_response = 0 WHERE id = ?', 
+               (now, now, 'phone', 'phone', contact_id))
+    
+    # Log the communication
+    db.execute('INSERT INTO communication_log (user_id, contact_id, action, method, timestamp) VALUES (?, ?, ?, ?, ?)',
+               (user_id, contact_id, 'phone_call', 'phone', now))
+    
+    db.commit()
+    return jsonify({'success': True})
+
 @app.route('/api/contacts/<int:contact_id>/responded', methods=['POST'])
 @login_required
 def mark_responded(contact_id):
@@ -647,7 +673,7 @@ def unmute_contact(contact_id):
     db.commit()
     return jsonify({'success': True})
 
-HTML_TEMPLATE = '''
+HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -757,6 +783,32 @@ HTML_TEMPLATE = '''
             gap: 5px;
             flex-wrap: wrap;
             align-items: center;
+        }
+        .phone-call-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 15px;
+        }
+        .phone-call-label {
+            font-size: 10px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 2px;
+        }
+        .phone-call-btn {
+            background: #20c997;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .phone-call-btn:hover {
+            background: #17a085;
         }
         .btn-group {
             display: flex;
@@ -1023,6 +1075,14 @@ HTML_TEMPLATE = '''
                 gap: 8px;
                 padding-top: 4px;
             }
+            .phone-call-section {
+                margin-right: 12px;
+            }
+            .phone-call-btn {
+                padding: 8px 12px;
+                font-size: 13px;
+                min-height: 36px;
+            }
             .btn-group {
                 margin-right: 12px;
             }
@@ -1070,7 +1130,7 @@ HTML_TEMPLATE = '''
     <div class="contacts-grid">
         <div class="contacts-section">
             <div class="section-header communication-needed-header">
-                🚨 Communication Needed (<span id="communicationNeededCount">0</span>)
+                Communication Needed (<span id="communicationNeededCount">0</span>)
             </div>
             <div class="section-content" id="communicationNeededList">
                 <div class="empty-section">No communication needed</div>
@@ -1079,7 +1139,7 @@ HTML_TEMPLATE = '''
         
         <div class="contacts-section">
             <div class="section-header">
-                📋 All Contacts (<span id="allCount">0</span>)
+                All Contacts (<span id="allCount">0</span>)
             </div>
             <div class="section-content" id="allContactsList">
                 <div class="empty-section">No contacts yet. Add someone to start tracking!</div>
@@ -1171,6 +1231,11 @@ HTML_TEMPLATE = '''
             } catch (error) {
                 alert('Error adding contact');
             }
+        }
+        
+        async function markPhoneCall(contactId) {
+            await fetch(`/contacts/api/contacts/${contactId}/phone`, { method: 'POST' });
+            loadContacts();
         }
         
         async function markSent(contactId, method) {
@@ -1377,6 +1442,10 @@ HTML_TEMPLATE = '''
                         <div class="contact-time">Last contact: ${contact.time_since}</div>
                     </div>
                     <div class="contact-actions">
+                        <div class="phone-call-section">
+                            <div class="phone-call-label">Phone Call</div>
+                            <button class="phone-call-btn" onclick="markPhoneCall(${contact.id})">Call</button>
+                        </div>
                         <div class="btn-group">
                             <div class="btn-group-label">Sent</div>
                             <div>
@@ -1392,7 +1461,7 @@ HTML_TEMPLATE = '''
                             </div>
                         </div>
                         ${contact.needs_response ? `<button class="btn btn-responded" onclick="markResponded(${contact.id})">Responded</button>` : ''}
-                        <button class="btn settings-btn" onclick="openSettingsModal(${contact.id})">⚙️</button>
+                        <button class="btn settings-btn" onclick="openSettingsModal(${contact.id})">Settings</button>
                     </div>
                 </div>
             `;
@@ -1437,7 +1506,7 @@ HTML_TEMPLATE = '''
     </script>
 </body>
 </html>
-'''
+"""
 
 if __name__ == '__main__':
     init_db()
