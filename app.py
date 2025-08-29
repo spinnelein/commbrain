@@ -10,7 +10,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 #test comment
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_prefix=1, x_host=1, x_proto=1)
-app.config['APPLICATION_ROOT'] = '/commbrain'
+app.config['APPLICATION_ROOT'] = '/contacts'
 app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key-change-this')
 
 # Load Google OAuth configuration from client_secret.json
@@ -1148,7 +1148,7 @@ HTML_TEMPLATE = '''
             }
             
             try {
-                const response = await fetch('/commbrain/api/contacts', {
+                const response = await fetch('/contacts/api/contacts', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1170,7 +1170,7 @@ HTML_TEMPLATE = '''
         }
         
         async function markSent(contactId, method) {
-            await fetch(`/commbrain/api/contacts/${contactId}/sent`, { 
+            await fetch(`/contacts/api/contacts/${contactId}/sent`, { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1181,7 +1181,7 @@ HTML_TEMPLATE = '''
         }
         
         async function markReceived(contactId, method) {
-            await fetch(`/commbrain/api/contacts/${contactId}/received`, { 
+            await fetch(`/contacts/api/contacts/${contactId}/received`, { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1192,7 +1192,7 @@ HTML_TEMPLATE = '''
         }
         
         async function markResponded(contactId) {
-            await fetch(`/commbrain/api/contacts/${contactId}/responded`, { method: 'POST' });
+            await fetch(`/contacts/api/contacts/${contactId}/responded`, { method: 'POST' });
             loadContacts();
         }
         
@@ -1254,7 +1254,7 @@ HTML_TEMPLATE = '''
             const maxDays = parseInt(document.getElementById('maxDays').value);
             
             try {
-                await fetch(`/commbrain/api/contacts/${currentContactId}/settings`, {
+                await fetch(`/contacts/api/contacts/${currentContactId}/settings`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1276,7 +1276,7 @@ HTML_TEMPLATE = '''
             if (!currentContactId) return;
             
             try {
-                await fetch(`/commbrain/api/contacts/${currentContactId}/snooze`, {
+                await fetch(`/contacts/api/contacts/${currentContactId}/snooze`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1294,7 +1294,7 @@ HTML_TEMPLATE = '''
             if (!currentContactId) return;
             
             try {
-                await fetch(`/commbrain/api/contacts/${currentContactId}/unsnooze`, {
+                await fetch(`/contacts/api/contacts/${currentContactId}/unsnooze`, {
                     method: 'POST'
                 });
                 closeSettingsModal();
@@ -1309,7 +1309,7 @@ HTML_TEMPLATE = '''
             
             if (confirm('Are you sure you want to mute this contact? They will never appear in the communication needed section.')) {
                 try {
-                    await fetch(`/commbrain/api/contacts/${currentContactId}/mute`, {
+                    await fetch(`/contacts/api/contacts/${currentContactId}/mute`, {
                         method: 'POST'
                     });
                     closeSettingsModal();
@@ -1324,7 +1324,7 @@ HTML_TEMPLATE = '''
             if (!currentContactId) return;
             
             try {
-                await fetch(`/commbrain/api/contacts/${currentContactId}/unmute`, {
+                await fetch(`/contacts/api/contacts/${currentContactId}/unmute`, {
                     method: 'POST'
                 });
                 closeSettingsModal();
@@ -1344,7 +1344,7 @@ HTML_TEMPLATE = '''
         
         async function loadContacts() {
             try {
-                const response = await fetch('/commbrain/api/contacts');
+                const response = await fetch('/contacts/api/contacts');
                 contacts = await response.json();
                 
                 // Sort contacts by name
