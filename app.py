@@ -799,12 +799,11 @@ HTML_TEMPLATE = """
         .phone-call-btn {
             background: #20c997;
             color: white;
-            padding: 8px 12px;
+            padding: 5px 10px;
             border: none;
-            border-radius: 5px;
+            border-radius: 3px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
+            font-size: 12px;
             white-space: nowrap;
         }
         .phone-call-btn:hover {
