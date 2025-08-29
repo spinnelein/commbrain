@@ -720,15 +720,18 @@ HTML_TEMPLATE = '''
             background: white;
             padding: 15px 20px;
             border-bottom: 1px solid #f0f0f0;
+            border-left: 4px solid #e9ecef;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 2px;
         }
         .contact:last-child {
             border-bottom: none;
         }
         .contact.needs-communication {
             background-color: #fff5f5;
+            border-left-color: #fd7e14;
         }
         .contact-info {
             flex: 1;
@@ -994,19 +997,29 @@ HTML_TEMPLATE = '''
             .contact {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 15px;
+                gap: 12px;
                 padding: 20px;
+                margin-bottom: 8px;
+                border-radius: 8px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             }
             .contact-info {
                 width: 100%;
+                padding-bottom: 8px;
+                border-bottom: 1px solid #eee;
             }
             .contact-name {
                 font-size: 16px;
+                margin-bottom: 8px;
+            }
+            .contact-badges {
+                margin-bottom: 4px;
             }
             .contact-actions {
                 width: 100%;
                 justify-content: flex-start;
                 gap: 8px;
+                padding-top: 4px;
             }
             .btn-group {
                 margin-right: 12px;
