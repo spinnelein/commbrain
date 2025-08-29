@@ -994,7 +994,8 @@ HTML_TEMPLATE = '''
             .contact {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 10px;
+                gap: 15px;
+                padding: 20px;
             }
             .contact-info {
                 width: 100%;
@@ -1005,13 +1006,27 @@ HTML_TEMPLATE = '''
             .contact-actions {
                 width: 100%;
                 justify-content: flex-start;
+                gap: 8px;
             }
             .btn-group {
-                margin-right: 8px;
+                margin-right: 12px;
             }
             .btn {
-                padding: 4px 8px;
-                font-size: 11px;
+                padding: 8px 12px;
+                font-size: 13px;
+                min-width: 50px;
+                min-height: 36px;
+            }
+            .settings-btn {
+                padding: 8px 12px;
+                font-size: 16px;
+                min-width: 40px;
+                min-height: 36px;
+            }
+            .btn-responded {
+                padding: 8px 12px;
+                font-size: 13px;
+                min-height: 36px;
             }
             .modal-content {
                 width: 90%;
@@ -1024,6 +1039,12 @@ HTML_TEMPLATE = '''
             .add-contact input {
                 width: 100%;
                 box-sizing: border-box;
+                padding: 12px;
+                font-size: 16px;
+            }
+            .add-contact button {
+                padding: 12px 20px;
+                font-size: 16px;
             }
         }
     </style>
