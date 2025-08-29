@@ -1444,7 +1444,7 @@ HTML_TEMPLATE = """
                     <div class="contact-actions">
                         <div class="phone-call-section">
                             <div class="phone-call-label">Phone Call</div>
-                            <button class="phone-call-btn" onclick="markPhoneCall(${contact.id})">Call</button>
+                            <button class="phone-call-btn" onclick="markPhoneCall(${contact.id})">Talked</button>
                         </div>
                         <div class="btn-group">
                             <div class="btn-group-label">Sent</div>
