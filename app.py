@@ -737,6 +737,13 @@ HTML_TEMPLATE = '''
             font-weight: bold;
             font-size: 18px;
             margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        .contact-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 4px;
         }
         .contact-time {
             color: #666;
@@ -786,35 +793,35 @@ HTML_TEMPLATE = '''
         .needs-response-badge {
             background: #ff6b6b;
             color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            margin-left: 10px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            white-space: nowrap;
         }
         .overdue-badge {
             background: #dc3545;
             color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            margin-left: 10px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
             animation: pulse 2s infinite;
+            white-space: nowrap;
         }
         .communication-needed-badge {
             background: #fd7e14;
             color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            margin-left: 10px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            white-space: nowrap;
         }
         .snoozed-badge {
             background: #6f42c1;
             color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            margin-left: 10px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            white-space: nowrap;
         }
         .contact.snoozed {
             opacity: 0.7;
@@ -822,10 +829,10 @@ HTML_TEMPLATE = '''
         .muted-badge {
             background: #6c757d;
             color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            margin-left: 10px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            white-space: nowrap;
         }
         .contact.muted {
             opacity: 0.6;
@@ -983,6 +990,40 @@ HTML_TEMPLATE = '''
         @media (max-width: 768px) {
             .contacts-grid {
                 grid-template-columns: 1fr;
+            }
+            .contact {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .contact-info {
+                width: 100%;
+            }
+            .contact-name {
+                font-size: 16px;
+            }
+            .contact-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .btn-group {
+                margin-right: 8px;
+            }
+            .btn {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+            .modal-content {
+                width: 90%;
+                margin: 10% auto;
+            }
+            .add-contact {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .add-contact input {
+                width: 100%;
+                box-sizing: border-box;
             }
         }
     </style>
@@ -1287,6 +1328,8 @@ HTML_TEMPLATE = '''
                     <div class="contact-info">
                         <div class="contact-name">
                             ${contact.name}
+                        </div>
+                        <div class="contact-badges">
                             ${contact.needs_response ? '<span class="needs-response-badge">Needs Response</span>' : ''}
                             ${contact.overdue ? '<span class="overdue-badge">OVERDUE</span>' : ''}
                             ${contact.needs_communication ? '<span class="communication-needed-badge">Contact Needed</span>' : ''}
