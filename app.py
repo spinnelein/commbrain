@@ -10,7 +10,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 #test comment
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_prefix=1)
-#app.config['APPLICATION_ROOT'] = '/commbrain'
+app.config['APPLICATION_ROOT'] = '/commbrain'
 app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key-change-this')
 
 # Load Google OAuth configuration from client_secret.json
